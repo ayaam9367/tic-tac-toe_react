@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 const Game = () => {
-  const [XisNext, setXisNext] = useState(true); //first turn is always of X
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  const XisNext = currentMove % 2 === 0;
   /**
    * This will declare the state as an array : ['null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null'];
    * We will assign each of these states to the Square component and each state will record an individual value
@@ -30,11 +30,10 @@ const Game = () => {
       const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
       setHistory(nextHistory);
       setCurrentMove(nextHistory.length - 1);
-      setXisNext(!XisNext);
       /**
        * If you “go back in time” and then make a new move from that point, you only want to 
        * keep the history up to that point. Instead of adding nextSquares after all items
-       *  (... spread syntax) in history, you’ll add it after all items in history.slice(0, currentMove + 1) 
+       * (... spread syntax) in history, you’ll add it after all items in history.slice(0, currentMove + 1) 
        * so that you’re only keeping that portion of the old history.
        */
     }
@@ -54,12 +53,15 @@ const Game = () => {
         <li key = {move}>
           <button onClick={() => jumpTo(move)}>{description}</button>
         </li>
+        /**
+         *  Moves will never be re-ordered, deleted, or inserted in the middle, so it’s safe to use
+         *  the move index as a key.
+         */
       );
     });
 
     function jumpTo(nextMove){
       setCurrentMove(nextMove);
-      setXisNext(nextMove % 2 === 0);
     }
 
   return (
